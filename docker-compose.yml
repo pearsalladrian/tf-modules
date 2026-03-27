@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  terraform:
+    image: hashicorp/terraform:latest
+    container_name: terraform
+    volumes:
+      - ./terraform:/terraform
+    working_dir: /terraform
+    command: terraform apply -auto-approve
+    environment:
+      - AWS_ACCESS_KEY_ID=your_aws_key
+      - AWS_SECRET_ACCESS_KEY=your_aws_secret
+    ports:
+      - "8080:8080"
+    stdin: true
+    tty: true
+
+  lambda:
+    image: public.ecr.aws/lambda/python:3.9
+    container_name: lambda_dev
+    volumes:
+      - ./lambda:/var/task
+    ports:
+      - "9000:9000"
+    environment:
+      - AWS_ACCESS_KEY_ID=your_aws_key
+      - AWS_SECRET_ACCESS_KEY=your_aws_secret
+    command: ["/var/task/lambda_function.py"]
+
+  vue-app:
+    image: nginx:latest
+    container_name: vue_app
+    ports:
+      - "8081:80"
+    volumes:
+      - ./vue-app:/usr/share/nginx/html
+    stdin: true
+    tty: true
+    command: ["sh", "-c", "nginx -g 'daemon off;'" ]
+
+  docker-registry:
+    image: registry:2
+    container_name: docker_registry
+    ports:
+      - "5000:5000"
+    volumes:
+      - docker-registry-data:/var/lib/registry
+
+volumes:
+  docker-registry-data:
+  terraform:
+    external: true
