@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "vue": "^2.6.14",
+    "typescript": "^4.4.3",
+    "aws-lambda": "^1.0.0",
+    "docker": "^20.10.12"
+  },
+  "version": "1.0.0",
+  "description": "Dependency manifest for the tf-modules project",
+  "license": "MIT"
+}
